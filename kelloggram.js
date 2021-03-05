@@ -22,11 +22,29 @@ firebase.auth().onAuthStateChanged(async function(user) {
       // Step 1:    POST fetch the create_post endpoint. Send the currently logged-in
       //            user's uid and username, and the image URL from the form in the
       //            POST request's body.
+
+      
+      let response = await fetch('/.netlify/functions/create_post', {
+        method: 'POST',
+        body: JSON.stringify({
+          username: postUsername,
+          userId: user.uid,
+          imageUrl: postImageUrl
+        })
+      })
+      console.log(response)
       // Step 2-5:  Implement the lambda function in create_post.js
       // Step 6:    The lambda should return an Object of data with information on the
       //            the post, including the newly created post's id and likes. Use this
       //            JSON response object and pass the post's relevant values on to the
       //            renderPost() function below.
+      let json = await response.json()
+      console.log(json)
+      let postId = json.id
+      // let postUsername = json.username
+      // let postImageUrl = json.imageUrl
+      let numberOfLikes = json.likes
+
       // Step 7:    (optional) Refactor renderPost() function to accept the entire post
       //            object instead of its individual attributes.
       // Challenge: Add functionality for users to comment on posts.
@@ -108,6 +126,8 @@ async function renderPost(postId, username, imageUrl, likes) {
     // Step 6:    Wrap the code below that visually increments the likes count in conditional logic
     //            so that it doesn't increment unless the backend added the like. Use either
     //            the response's body or the status code.
+
+    
     // 🔥🔥🔥 End Code-Along
 
     let existingNumberOfLikes = document.querySelector(`.post-${postId} .likes`).innerHTML
